@@ -1,0 +1,35 @@
+- name: Installing the necessary programs
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+    update_cache: true
+  tags: install
+
+- name: Add key
+  apt_key:
+    url: https://www.mongodb.org/static/pgp/server-4.2.asc
+    state: present
+  tags: install
+
+- name: Add source repository
+  apt_repository:
+    repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse
+    state: present
+    update_cache: true
+    filename: /etc/apt/sources.list.d/mongodb-org-4.2
+  tags: install
+
+- name: Install mongod
+  apt:
+    name:
+      - mongodb-org
+    state: present
+  tags: install
+
+- name: Start and enable mongod
+  systemd:
+    name: mongod
+    state: started
+    enabled: true
+  tags: install
